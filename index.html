@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduGuide - Academic Guidance App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-color: #4f46e5; /* Indigo */
+            --accent-color: #10b981; /* Emerald/Mint */
+            --background-dark: #0f172a; /* Slate Darker */
+            --text-light: #f3f4f6; /* Light Gray */
+            --card-dark: #1e293b; /* Slate Medium Dark */
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            /* Prevents horizontal overflow from the blob on small screens */
+            overflow-x: hidden; 
+        }
+
+        .hero-section {
+            /* Deeper gradient for a more premium look */
+            background: linear-gradient(180deg, var(--background-dark) 0%, #0c121e 100%);
+            position: relative;
+            /* Ensuring inner content is on top of the blob */
+            z-index: 20; 
+        }
+
+        /* Abstract Blob for Visual Punch */
+        .hero-blob {
+            position: absolute;
+            top: 50%;
+            /* Moved slightly left to reduce risk of overflow, relative to its parent section */
+            right: -150px; 
+            transform: translateY(-50%) rotate(45deg);
+            width: 500px;
+            height: 500px;
+            background: rgba(79, 70, 229, 0.1); /* Light indigo wash */
+            border-radius: 50% 30% 70% 40%;
+            filter: blur(100px);
+            z-index: 1;
+            animation: pulse 8s infinite alternate;
+            opacity: 0.5;
+        }
+
+        @keyframes pulse {
+            0% { transform: translateY(-50%) rotate(45deg) scale(0.95); opacity: 0.4; }
+            100% { transform: translateY(-50%) rotate(40deg) scale(1.05); opacity: 0.6; }
+        }
+
+        .cta-button {
+            box-shadow: 0 6px 16px 0 rgba(79, 70, 229, 0.8); /* Even stronger shadow */
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            z-index: 10;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px 0 rgba(79, 70, 229, 0.9);
+        }
+
+        .problem-card {
+            background-color: var(--card-dark);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: transform 0.3s ease;
+            max-width: 400px;
+            z-index: 5;
+            position: relative;
+        }
+
+        .problem-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        }
+        
+        /* Screenshots Section */
+        .screenshot-mockup-item {
+            background-color: #000;
+            border-radius: 2rem;
+            padding: 4px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid var(--accent-color); /* Highlight screenshot frames */
+        }
+        
+        .screenshot-mockup-item img {
+            border-radius: 1.7rem;
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .screenshot-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 0.75rem;
+            background-color: rgba(0, 0, 0, 0.85);
+            color: var(--accent-color);
+            font-weight: 700;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .screenshot-mockup-item:hover .screenshot-title {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .hero-blob {
+                display: none; /* Hide blob on small screens to prevent overflow */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="sticky top-0 z-50 bg-gray-900/90 backdrop-blur-sm shadow-xl">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-3xl font-extrabold text-white">
+                EduGuide
+            </h1>
+            <a href="https://drive.google.com/uc?export=download&id=180pyeHaR1CSNY7RPvaMy0LoeFym0fzkb" target="_blank" class="btn cta-button bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-6 rounded-full transition duration-300">
+                Download Now ⚡️
+            </a>
+        </div>
+    </header>
+
+    <section class="hero-section py-20 lg:py-32">
+        <!-- Visual Blob Element -->
+        <div class="hero-blob hidden lg:block"></div>
+
+        <div class="container mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
+            <div class="lg:pr-10 text-center lg:text-left">
+                <span class="text-indigo-400 font-semibold uppercase tracking-wider mb-3 block">Academic Guidance, Simplified 🎓</span>
+                <h2 class="text-5xl lg:text-7xl font-extrabold leading-tight text-white mb-6">
+                    Stop Guessing. <span class="text-indigo-400">Find Your Expert</span> Instantly.
+                </h2>
+                <p class="text-xl text-gray-300 mb-8">
+                    **EduGuide** is the essential app for college students. Connect with **subject-matter experts**, check their **real-time availability**, and eliminate the frustrating hunt for office hours forever.
+                </p>
+                <a href="https://drive.google.com/uc?export=download&id=180pyeHaR1CSNY7RPvaMy0LoeFym0fzkb" target="_blank" class="cta-button bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-lg py-3 px-10 rounded-full transition duration-300 inline-block shadow-lg">
+                    Download the EduGuide App <i class="fas fa-arrow-down ml-2"></i>
+                </a>
+            </div>
+
+            <div class="flex justify-center lg:justify-end">
+                <div class="problem-card p-8 rounded-xl w-full">
+                    <h3 class="text-2xl font-bold text-white mb-4 flex items-center">
+                        <i class="fas fa-hand-point-right text-accent-color mr-3"></i> The Real Problem Students Face
+                    </h3>
+                    <ul class="space-y-4 text-gray-300">
+                        <li class="flex items-start">
+                            <i class="fas fa-question-circle text-indigo-400 mt-1 mr-3"></i>
+                            **Topic Specialization:** Don’t know which professor is the perfect fit for their niche subject.
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-hourglass-start text-indigo-400 mt-1 mr-3"></i>
+                            **Wasted Time:** Manually emailing and checking boards to confirm teacher availability.
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-door-open text-indigo-400 mt-1 mr-3"></i>
+                            **Miscommunication:** Missed meetings due to outdated office hours or location changes.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-gray-900">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-4xl font-extrabold text-white mb-4">Powerful Features for Academic Mastery 🚀</h2>
+            <p class="text-xl text-gray-400 mb-12">Built to connect students and faculty instantly and reliably.</p>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-gray-800 p-8 rounded-xl shadow-xl hover:shadow-2xl transition duration-300">
+                    <i class="fas fa-chalkboard-teacher text-5xl text-accent-color mb-4"></i>
+                    <h3 class="text-xl font-bold text-white mb-2">Expert Profiles <span class="text-indigo-400">Enhanced</span> 👨‍🏫</h3>
+                    <p class="text-gray-300">Detailed specializations, research, and contact info. Find your exact expert in seconds, not semesters.</p>
+                </div>
+
+                <div class="bg-gray-800 p-8 rounded-xl shadow-xl hover:shadow-2xl transition duration-300">
+                    <i class="fas fa-calendar-check text-5xl text-accent-color mb-4"></i>
+                    <h3 class="text-xl font-bold text-white mb-2">Live Availability <span class="text-indigo-400">Guaranteed</span> 🗓️</h3>
+                    <p class="text-gray-300">Automatic free slot detection synced with official schedules, providing true real-time availability.</p>
+                </div>
+
+                <div class="bg-gray-800 p-8 rounded-xl shadow-xl hover:shadow-2xl transition duration-300">
+                    <i class="fas fa-search text-5xl text-accent-color mb-4"></i>
+                    <h3 class="text-xl font-bold text-white mb-2">Smart Search & <span class="text-indigo-400">Firestore Speed</span> ⚡️</h3>
+                    <p class="text-gray-300">Advanced filtering and instant data updates powered by **Firebase Firestore** for unparalleled speed and reliability.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 lg:py-32" id="screenshots">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-4xl font-extrabold text-white mb-4">A Peek Inside EduGuide 📲</h2>
+            <p class="text-xl text-gray-400 mb-16">See how easy it is to find guidance with our intuitive interface.</p>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 justify-center">
+                
+                <div class="screenshot-mockup-item mx-auto transition duration-500 hover:scale-[1.02]">
+                    <img src="assets/mockup/image1.jpeg" alt="EduGuide Home Screen" class="rounded-3xl border-4 border-gray-700">
+                    <div class="screenshot-title">1. Home Screen</div>
+                </div>
+                
+                <div class="screenshot-mockup-item mx-auto transition duration-500 hover:scale-[1.02]">
+                    <img src="assets/mockup/image2.jpeg" alt="Find Professor List" class="rounded-3xl border-4 border-gray-700">
+                    <div class="screenshot-title">2. Find Professor</div>
+                </div>
+                
+                <div class="screenshot-mockup-item mx-auto transition duration-500 hover:scale-[1.02]">
+                    <img src="assets/mockup/image3.jpeg" alt="Professor Profile and Research" class="rounded-3xl border-4 border-gray-700">
+                    <div class="screenshot-title">3. Professor Details</div>
+                </div>
+                
+                <div class="screenshot-mockup-item mx-auto transition duration-500 hover:scale-[1.02]">
+                    <img src="assets/mockup/image4.jpeg" alt="Check Weekly Availability" class="rounded-3xl border-4 border-gray-700">
+                    <div class="screenshot-title">4. Check Availability</div>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-indigo-600" id="download">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-4xl lg:text-5xl font-extrabold text-white mb-4">Ready to find your guide? 🎯 Get the Edge.</h2>
+            <p class="text-xl text-indigo-100 mb-10">Download EduGuide today and streamline your academic journey into a success story.</p>
+            
+            <a href="https://drive.google.com/uc?export=download&id=180pyeHaR1CSNY7RPvaMy0LoeFym0fzkb" target="_blank" class="btn cta-button bg-white text-indigo-600 hover:bg-gray-100 font-extrabold text-xl py-4 px-12 rounded-full transition duration-300 shadow-xl inline-flex items-center">
+                <i class="fas fa-download text-3xl mr-3"></i> Download APK from Drive
+            </a>
+            <p class="text-sm text-indigo-200 mt-4">Available for Android Only. 📲</p>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 py-8">
+        <div class="container mx-auto px-6 text-center text-gray-400 text-sm">
+            <div class="mt-4 pt-4 border-t border-gray-800">
+                <span class="font-semibold text-white">Designed and Developed By:</span>
+                <span class="block mt-1">
+                    <a href="https://www.linkedin.com/in/krishgupta7/" target="_blank" class="text-indigo-400 hover:text-indigo-300 transition duration-200">Krish Gupta ⭐</a> and 
+                    <a href="https://www.linkedin.com/in/sahilmishra03/" target="_blank" class="text-indigo-400 hover:text-indigo-300 transition duration-200">Sahil Mishra 💫</a>
+                </span>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
