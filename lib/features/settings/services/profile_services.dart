@@ -56,7 +56,6 @@ class UserProfile {
   }
 }
 
-
 // The service now includes logic for uploading images to Firebase Storage.
 class ProfileService {
   final UsersService _usersService = UsersService();
@@ -66,7 +65,7 @@ class ProfileService {
   Future<UserProfile> getUserProfile() async {
     final user = _auth.currentUser;
     if (user == null) throw Exception('User not logged in.');
-    
+
     final doc = await _usersService.readUser(user.uid);
 
     if (doc.exists) {
@@ -83,7 +82,10 @@ class ProfileService {
     if (user == null) throw Exception('User not logged in.');
 
     try {
-      final ref = _storage.ref().child('profile_pictures').child('${user.uid}.jpg');
+      final ref = _storage
+          .ref()
+          .child('profile_pictures')
+          .child('${user.uid}.jpg');
       await ref.putFile(imageFile);
       final url = await ref.getDownloadURL();
       return url;

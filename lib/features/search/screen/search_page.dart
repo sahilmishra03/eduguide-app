@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:eduguide/features/professors/screens/professors_profile.dart'; // Make sure this import is correct
-import 'package:eduguide/features/professors/services/professor_service.dart'; // Make sure this import is correct
+import 'package:eduguide/features/professors/screens/professors_profile.dart';
+import 'package:eduguide/features/professors/services/professor_service.dart';
+import 'package:eduguide/features/widgets/professor_status_helper.dart';
 import 'package:flutter/material.dart';
 
-// --- Constants (Copied for consistency, consider moving to a shared file) ---
+// --- Constants ---
 const Color primaryBlue = Color(0xFF407BFF);
 const Color lightBackground = Color(0xFFF7F7FD);
 const Color cardBackground = Colors.white;
@@ -20,26 +21,33 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  // State variables for search and filtering
   final TextEditingController _searchController = TextEditingController();
+
   String _searchQuery = '';
-  String? _selectedSpecialization;
+  String _selectedSpecialization = 'All';
+  String _selectedDay = 'All Days';
 
-  // Lists to hold professor data
-  List<DocumentSnapshot> _allProfessors = [];
-  List<DocumentSnapshot> _filteredProfessors = [];
+  final Set<String> _specializations = {'All'};
+  final List<String> _days = [
+    'All Days',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+  ];
 
-  // Set to hold unique specializations for the dropdown filter
-  final Set<String> _specializations = {'All'}; // Start with 'All'
+  /// ⭐ rating cache
+  final Map<String, double> _ratingMap = {};
 
   @override
   void initState() {
     super.initState();
-    // Listen to changes in the search bar text
     _searchController.addListener(() {
       setState(() {
         _searchQuery = _searchController.text;
-        _applyFilters();
       });
     });
   }
@@ -50,43 +58,73 @@ class _SearchPageState extends State<SearchPage> {
     super.dispose();
   }
 
-  /// Applies search and filter logic to the list of professors
-  void _applyFilters() {
-    List<DocumentSnapshot> tempList = List.from(_allProfessors);
+  // --------------------------------------------------------
+  // FILTER + SORT
+  List<DocumentSnapshot> _applyFilters(List<DocumentSnapshot> all) {
+    List<DocumentSnapshot> temp = List.from(all);
 
-    // 1. Apply search query
+    // Remove duplicates based on professor name
+    final seenNames = <String>{};
+    temp = temp.where((doc) {
+      final data = doc.data() as Map<String, dynamic>;
+      final name = data['name'] as String? ?? '';
+      if (seenNames.contains(name)) {
+        return false; // Skip duplicate
+      }
+      seenNames.add(name);
+      return true;
+    }).toList();
+
     if (_searchQuery.isNotEmpty) {
-      tempList = tempList.where((doc) {
+      temp = temp.where((doc) {
         final data = doc.data() as Map<String, dynamic>;
-        final name = (data['name'] as String? ?? '').toLowerCase();
-        return name.contains(_searchQuery.toLowerCase());
+        return (data['name'] ?? '').toLowerCase().contains(
+          _searchQuery.toLowerCase(),
+        );
       }).toList();
     }
 
-    // 2. Apply specialization filter
-    if (_selectedSpecialization != null && _selectedSpecialization != 'All') {
-      tempList = tempList.where((doc) {
+    if (_selectedSpecialization != 'All') {
+      temp = temp.where((doc) {
         final data = doc.data() as Map<String, dynamic>;
-        final specializations =
-            (data['specializations'] as List<dynamic>? ?? []);
-        return specializations.contains(_selectedSpecialization);
+        final specs = (data['specializations'] ?? []) as List;
+        return specs.contains(_selectedSpecialization);
       }).toList();
     }
 
-    setState(() {
-      _filteredProfessors = tempList;
+    if (_selectedDay != 'All Days') {
+      temp = temp.where((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        final availability =
+            data['availability'] as Map<String, dynamic>? ?? {};
+
+        // Check for both capitalized and lowercase versions of the day
+        final hasCapitalized = availability.containsKey(_selectedDay);
+        final hasLowercase = availability.containsKey(
+          _selectedDay.toLowerCase(),
+        );
+
+        return hasCapitalized || hasLowercase;
+      }).toList();
+    }
+
+    temp.sort((a, b) {
+      final r1 = _ratingMap[a.id] ?? 0;
+      final r2 = _ratingMap[b.id] ?? 0;
+      return r2.compareTo(r1);
     });
+
+    return temp;
   }
 
+  // --------------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: lightBackground,
       appBar: AppBar(
         backgroundColor: primaryBlue,
-        elevation: 1,
         centerTitle: true,
-        automaticallyImplyLeading: false, // Hides the back button
         title: const Text(
           'Find a Professor',
           style: TextStyle(
@@ -98,60 +136,60 @@ class _SearchPageState extends State<SearchPage> {
       ),
       body: Column(
         children: [
-          // Search and Filter UI
           _buildControls(),
 
-          // Professor List
           Expanded(
-            child: FutureBuilder<QuerySnapshot>(
-              // Fetch the data once
-              future: widget.professorsService.getProfessorsStream().first,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(color: primaryBlue),
-                  );
-                }
-                if (snapshot.hasError) {
-                  return const Center(child: Text("Failed to load data."));
-                }
-                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return const Center(child: Text("No professors available."));
-                }
-
-                // If this is the first time loading data, populate our lists
-                if (_allProfessors.isEmpty) {
-                  _allProfessors = snapshot.data!.docs;
-                  _filteredProfessors = List.from(_allProfessors);
-
-                  // Extract unique specializations for the filter dropdown
-                  for (var doc in _allProfessors) {
-                    final data = doc.data() as Map<String, dynamic>;
-                    final specs =
-                        (data['specializations'] as List<dynamic>? ?? []);
-                    for (var spec in specs) {
-                      _specializations.add(spec.toString());
-                    }
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('rating_summary')
+                  .snapshots(),
+              builder: (context, ratingSnap) {
+                _ratingMap.clear();
+                if (ratingSnap.hasData) {
+                  for (var doc in ratingSnap.data!.docs) {
+                    _ratingMap[doc.id] = (doc['avgRating'] ?? 0).toDouble();
                   }
                 }
 
-                if (_filteredProfessors.isEmpty) {
-                  return const Center(
-                    child: Text(
-                      "No professors match your criteria.",
-                      style: TextStyle(color: textSubtle, fontSize: 16),
-                    ),
-                  );
-                }
+                return StreamBuilder<QuerySnapshot>(
+                  stream: widget.professorsService.getProfessorsStream(),
+                  builder: (context, profSnap) {
+                    if (!profSnap.hasData) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
 
-                return ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  itemCount: _filteredProfessors.length,
-                  itemBuilder: (context, idx) {
-                    final doc = _filteredProfessors[idx];
-                    final data = doc.data() as Map<String, dynamic>;
-                    data['id'] = doc.id; // Pass the document ID
-                    return _buildProfessorCard(context, data);
+                    final all = profSnap.data!.docs;
+
+                    if (_specializations.length == 1) {
+                      for (var doc in all) {
+                        final specs = (doc['specializations'] ?? []) as List;
+                        for (var s in specs) {
+                          _specializations.add(s.toString());
+                        }
+                      }
+                    }
+
+                    final filtered = _applyFilters(all);
+
+                    if (filtered.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          "No professors match your criteria.",
+                          style: TextStyle(color: textSubtle),
+                        ),
+                      );
+                    }
+
+                    return ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                      itemCount: filtered.length,
+                      itemBuilder: (context, idx) {
+                        final doc = filtered[idx];
+                        final data = doc.data() as Map<String, dynamic>;
+                        data['id'] = doc.id;
+                        return _buildProfessorCard(context, data);
+                      },
+                    );
                   },
                 );
               },
@@ -162,69 +200,185 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  /// Builds the search bar and filter dropdown
+  // --------------------------------------------------------
   Widget _buildControls() {
     return Container(
       padding: const EdgeInsets.all(16),
       color: cardBackground,
-      child: Row(
+      child: Column(
         children: [
-          // Search Bar
-          Expanded(
-            flex: 3, // Give search bar more space
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search by name...',
-                prefixIcon: Icon(Icons.search, color: textSubtle),
-                filled: true,
-                fillColor: lightBackground,
-                contentPadding: EdgeInsets.symmetric(
-                  vertical: 0,
-                  horizontal: 16,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
+          // Search bar
+          TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: 'Search by name...',
+              prefixIcon: Icon(Icons.search, color: textSubtle),
+              filled: true,
+              fillColor: lightBackground,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
               ),
             ),
           ),
-          const SizedBox(width: 12),
-          // Filter Dropdown
-          Expanded(
-            flex: 2, // Give dropdown flexible space
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                color: lightBackground,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: DropdownButtonHideUnderline(
-                // Clean way to remove the underline
-                child: DropdownButton<String>(
-                  value: _selectedSpecialization ?? 'All',
-                  isExpanded:
-                      true, // FIX: Allows the dropdown to expand and prevents overflow
-                  icon: Icon(Icons.filter_list_rounded, color: primaryBlue),
-                  items: _specializations.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        value,
-                        overflow: TextOverflow
-                            .ellipsis, // FIX: Prevents long text from overflowing the menu
-                        style: TextStyle(color: textBody),
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    setState(() {
-                      _selectedSpecialization = newValue;
-                      _applyFilters();
-                    });
-                  },
+          const SizedBox(height: 12),
+
+          // Filter buttons
+          Row(
+            children: [
+              Expanded(
+                child: _buildFilterButton(
+                  label: _selectedSpecialization,
+                  icon: Icons.subject,
+                  onTap: () => _showSpecializationFilter(),
                 ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _buildFilterButton(
+                  label: _selectedDay,
+                  icon: Icons.calendar_today,
+                  onTap: () => _showDayFilter(),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterButton({
+    required String label,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        decoration: BoxDecoration(
+          color: lightBackground,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: primaryBlue.withOpacity(0.2)),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: primaryBlue, size: 18),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                label,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: textBody, fontWeight: FontWeight.w500),
+              ),
+            ),
+            Icon(Icons.keyboard_arrow_down, color: primaryBlue, size: 18),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showSpecializationFilter() {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => _buildFilterSheet(
+        title: 'Filter by Specialization',
+        options: _specializations.toList(),
+        selected: _selectedSpecialization,
+        onSelected: (value) {
+          setState(() => _selectedSpecialization = value);
+          Navigator.pop(context);
+        },
+      ),
+    );
+  }
+
+  void _showDayFilter() {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => _buildFilterSheet(
+        title: 'Filter by Day',
+        options: _days,
+        selected: _selectedDay,
+        onSelected: (value) {
+          setState(() {
+            _selectedDay = value;
+            print('Day filter changed to: $value'); // Debug log
+          });
+          Navigator.pop(context);
+        },
+      ),
+    );
+  }
+
+  Widget _buildFilterSheet({
+    required String title,
+    required List<String> options,
+    required String selected,
+    required Function(String) onSelected,
+  }) {
+    return Container(
+      width: double.infinity,
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.7,
+      ),
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: textBody,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Flexible(
+            child: SingleChildScrollView(
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: options.map((option) {
+                  final isSelected = option == selected;
+                  return GestureDetector(
+                    onTap: () => onSelected(option),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isSelected ? primaryBlue : lightBackground,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: isSelected
+                              ? primaryBlue
+                              : primaryBlue.withOpacity(0.3),
+                        ),
+                      ),
+                      child: Text(
+                        option,
+                        style: TextStyle(
+                          color: isSelected ? Colors.white : textBody,
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
               ),
             ),
           ),
@@ -233,16 +387,16 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  /// Builds a styled card for a single professor. (No changes needed here)
+  // --------------------------------------------------------
+  // PROFESSOR CARD + STATUS
   Widget _buildProfessorCard(BuildContext context, Map<String, dynamic> data) {
-    final name = data['name'] ?? 'N/A';
-    final specializations = (data['specializations'] as List<dynamic>? ?? [])
-        .join(', ');
+    final name = data['name'] ?? '';
+    final specs = (data['specializations'] as List<dynamic>? ?? []).join(', ');
     final imageUrl = data['image'] as String?;
+    final rating = _ratingMap[data['id']];
 
     return GestureDetector(
       onTap: () {
-        // Ensure ProfessorDetailPage is imported correctly
         Navigator.push(
           context,
           MaterialPageRoute(builder: (_) => ProfessorDetailPage(data: data)),
@@ -256,7 +410,7 @@ class _SearchPageState extends State<SearchPage> {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withAlpha(13), // ~5% opacity
+              color: Colors.black.withAlpha(13),
               blurRadius: 10,
               offset: const Offset(0, 2),
             ),
@@ -266,49 +420,118 @@ class _SearchPageState extends State<SearchPage> {
           children: [
             CircleAvatar(
               radius: 30,
-              backgroundColor: primaryBlue.withAlpha(26), // 10% opacity
-              backgroundImage: (imageUrl != null && imageUrl.isNotEmpty)
+              backgroundColor: primaryBlue.withAlpha(26),
+              backgroundImage: imageUrl != null && imageUrl.isNotEmpty
                   ? NetworkImage(imageUrl)
                   : null,
               child: (imageUrl == null || imageUrl.isEmpty)
-                  ? Icon(Icons.person, color: primaryBlue, size: 30)
+                  ? Icon(Icons.person, color: primaryBlue)
                   : null,
             ),
             const SizedBox(width: 16),
+
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  /// NAME + STATUS
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          name,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 17,
+                            color: textBody,
+                          ),
+                        ),
+                      ),
+                      _statusBadge(data),
+                    ],
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  if (specs.isNotEmpty)
+                    Text(
+                      specs,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: textSubtle),
+                    ),
+
+                  const SizedBox(height: 6),
+
                   Text(
-                    name,
+                    rating == null ? "⭐ New" : "⭐ ${rating.toStringAsFixed(1)}",
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
                       color: textBody,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  if (specializations.isNotEmpty)
-                    Text(
-                      specializations,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: textSubtle,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
                 ],
               ),
             ),
-            const SizedBox(width: 8),
+
             const Icon(
               Icons.arrow_forward_ios_rounded,
               color: Colors.grey,
               size: 16,
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  // --------------------------------------------------------
+  // STATUS LOGIC
+  Widget _statusBadge(Map<String, dynamic> data) {
+    final availability = data['availability'] as Map<String, dynamic>? ?? {};
+
+    final result = ProfessorStatusHelper.calculate(availability);
+
+    // Don't show any badge outside college hours (before 9AM or after 5PM)
+    if (result.status == ProfessorStatus.outsideCollegeHours) {
+      return const SizedBox.shrink();
+    }
+
+    Color color;
+    String text;
+
+    switch (result.status) {
+      case ProfessorStatus.inCabin:
+        color = Colors.green;
+        text = "IN CABIN";
+        break;
+      case ProfessorStatus.busy:
+        color = Colors.orange;
+        text = result.nextAvailableIn != null
+            ? "BUSY • ${result.nextAvailableIn!.inMinutes} min"
+            : "BUSY";
+        break;
+      default:
+        color = Colors.red;
+        text = "ABSENT";
+    }
+
+    return _badge(text, color);
+  }
+
+  Widget _badge(String text, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.bold,
+          color: color,
         ),
       ),
     );

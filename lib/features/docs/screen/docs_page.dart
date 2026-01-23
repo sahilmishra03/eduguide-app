@@ -5,6 +5,6 @@ class DocsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text("Coming Soon ❤️"),);
+    return Center(child: Text("Coming Soon ❤️"));
   }
 }

@@ -1,16 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eduguide/features/professors/services/professor_service.dart';
+import 'package:eduguide/features/widgets/professor_status_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../professors/screens/professors_profile.dart';
 
-// --- Constants (Synced with ProfessorDetailPage) ---
-Color primaryBlue = Color(0xFF407BFF);
-Color lightBackground = Color(0xFFF7F7FD);
+// --- Constants ---
+Color primaryBlue = const Color(0xFF407BFF);
+Color lightBackground = const Color(0xFFF7F7FD);
 Color cardBackground = Colors.white;
-Color textSubtle = Color(0xFF6E6E73);
-Color textBody = Color(0xFF1D1D1F);
+Color textSubtle = const Color(0xFF6E6E73);
+Color textBody = const Color(0xFF1D1D1F);
 
 class HomePage extends StatefulWidget {
   final Function(int) onNavigate;
@@ -23,6 +24,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final ProfessorsService _professorsService = ProfessorsService();
 
+  final Map<String, double> _ratingMap = {};
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,113 +33,223 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: primaryBlue,
         elevation: 0,
+        centerTitle: true,
         title: const Text(
           "EduGuide",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.5,
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        centerTitle: true,
       ),
+
       body: StreamBuilder<QuerySnapshot>(
-        stream: _professorsService.getProfessorsStream(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+        stream: FirebaseFirestore.instance
+            .collection('rating_summary')
+            .snapshots(),
+        builder: (context, ratingSnap) {
+          if (!ratingSnap.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (snapshot.hasError) {
-            return const Center(child: Text("Something went wrong."));
+
+          _ratingMap.clear();
+          for (var doc in ratingSnap.data!.docs) {
+            _ratingMap[doc.id] = (doc['avgRating'] ?? 0).toDouble();
           }
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text("No professors found."));
-          }
 
-          // --- Process and categorize the data ---
-          final professors = snapshot.data!.docs;
-          final Map<String, List<Map<String, dynamic>>>
-          allCategorizedProfessors = {};
-
-          for (var profDoc in professors) {
-            final data = profDoc.data() as Map<String, dynamic>;
-            data['id'] = profDoc.id; // Keep the document ID
-            final specializations =
-                data['specializations'] as List<dynamic>? ?? [];
-
-            // MODIFICATION: Assign professor to their FIRST specialization only
-            if (specializations.isNotEmpty) {
-              final primaryCategory = specializations.first.toString();
-              if (allCategorizedProfessors.containsKey(primaryCategory)) {
-                allCategorizedProfessors[primaryCategory]!.add(data);
-              } else {
-                allCategorizedProfessors[primaryCategory] = [data];
+          return StreamBuilder<QuerySnapshot>(
+            stream: _professorsService.getProfessorsStream(),
+            builder: (context, profSnap) {
+              if (!profSnap.hasData) {
+                return const Center(child: CircularProgressIndicator());
               }
-            }
-          }
 
-          // MODIFICATION: Limit to the top 5 categories by professor count
-          var sortedCategories = allCategorizedProfessors.entries.toList()
-            ..sort((a, b) => b.value.length.compareTo(a.value.length));
+              final docs = profSnap.data!.docs;
+              final Map<String, List<Map<String, dynamic>>> categoryMap = {};
 
-          final top5Categories = sortedCategories.take(5);
-          final categorizedProfessors = {
-            for (var e in top5Categories) e.key: e.value,
-          };
+              for (var doc in docs) {
+                final data = doc.data() as Map<String, dynamic>;
+                final id = doc.id;
 
-          return ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              // --- Quick Actions Section ---
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                if (!_ratingMap.containsKey(id)) continue;
+
+                data['id'] = id;
+                data['rating'] = _ratingMap[id];
+
+                final specs = (data['specializations'] as List<dynamic>? ?? []);
+                if (specs.isEmpty) continue;
+
+                final category = specs.first.toString();
+                categoryMap.putIfAbsent(category, () => []);
+                categoryMap[category]!.add(data);
+              }
+
+              final visibleCategories = categoryMap.entries.take(3);
+
+              return ListView(
+                padding: const EdgeInsets.all(16),
                 children: [
-                  Expanded(
-                    child: _quickAction(
-                      context,
-                      icon: FontAwesomeIcons.graduationCap,
-                      label: "Teachers",
-                      onTap: () => widget.onNavigate(1),
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _quickAction(
+                          icon: FontAwesomeIcons.graduationCap,
+                          label: "Teachers",
+                          onTap: () => widget.onNavigate(1),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _quickAction(
+                          icon: FontAwesomeIcons.magnifyingGlass,
+                          label: "Search",
+                          onTap: () => widget.onNavigate(2),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _quickAction(
-                      context,
-                      icon: FontAwesomeIcons.magnifyingGlass,
-                      label: "Search",
-                      onTap: () => widget.onNavigate(2),
-                    ),
-                  ),
+                  const SizedBox(height: 24),
+
+                  ...visibleCategories.map((entry) {
+                    final profs = entry.value.take(3).toList();
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _sectionTitle("Top Rated in ${entry.key}"),
+                        ...profs.map((p) => _teacherCard(context, p)),
+                        const SizedBox(height: 20),
+                      ],
+                    );
+                  }),
                 ],
-              ),
-              const SizedBox(height: 24),
-
-              // --- Dynamically Generated Professor Sections ---
-              ...categorizedProfessors.entries.map((entry) {
-                final category = entry.key;
-                final profList = entry.value;
-
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _sectionTitle("Top Teachers in $category"),
-                    ...profList.map((profData) {
-                      return _teacherCard(context: context, data: profData);
-                    }),
-                    const SizedBox(height: 20),
-                  ],
-                );
-              }),
-            ],
+              );
+            },
           );
         },
       ),
     );
   }
 
-  Widget _quickAction(
-    BuildContext context, {
+  // --------------------------------------------------
+  Widget _teacherCard(BuildContext context, Map<String, dynamic> data) {
+    final rating = data['rating'] as double;
+    final name = data['name'] ?? '';
+    final specs = (data['specializations'] as List<dynamic>).join(', ');
+    final imageUrl = data['image'];
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => ProfessorDetailPage(data: data)),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: cardBackground,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 30,
+              backgroundImage: imageUrl != null ? NetworkImage(imageUrl) : null,
+              child: imageUrl == null
+                  ? Icon(Icons.person, color: primaryBlue)
+                  : null,
+            ),
+            const SizedBox(width: 16),
+
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  /// NAME + STATUS
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          name,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      _statusBadge(data),
+                    ],
+                  ),
+
+                  Text(
+                    specs,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: textSubtle),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "⭐ ${rating.toStringAsFixed(1)}",
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // --------------------------------------------------
+  Widget _statusBadge(Map<String, dynamic> data) {
+    final availability = data['availability'] as Map<String, dynamic>? ?? {};
+
+    final result = ProfessorStatusHelper.calculate(availability);
+
+    // Don't show any badge outside college hours (before 9AM or after 5PM)
+    if (result.status == ProfessorStatus.outsideCollegeHours) {
+      return const SizedBox.shrink();
+    }
+
+    Color color;
+    String text;
+
+    switch (result.status) {
+      case ProfessorStatus.inCabin:
+        color = Colors.green;
+        text = "IN CABIN";
+        break;
+      case ProfessorStatus.busy:
+        color = Colors.orange;
+        text = result.nextAvailableIn != null
+            ? "BUSY • ${result.nextAvailableIn!.inMinutes} min"
+            : "BUSY";
+        break;
+      default:
+        color = Colors.red;
+        text = "ABSENT";
+    }
+
+    return _badge(text, color);
+  }
+
+  Widget _badge(String text, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.bold,
+          color: color,
+        ),
+      ),
+    );
+  }
+
+  // --------------------------------------------------
+  Widget _quickAction({
     required IconData icon,
     required String label,
     required VoidCallback onTap,
@@ -144,32 +257,16 @@ class _HomePageState extends State<HomePage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
           color: cardBackground,
           borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.06),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
         ),
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: primaryBlue, size: 24),
+            Icon(icon, color: primaryBlue),
             const SizedBox(height: 8),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: textBody,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
+            Text(label, style: const TextStyle(fontWeight: FontWeight.w600)),
           ],
         ),
       ),
@@ -178,95 +275,13 @@ class _HomePageState extends State<HomePage> {
 
   Widget _sectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12, top: 8, left: 4),
+      padding: const EdgeInsets.only(bottom: 12, top: 8),
       child: Text(
         title,
         style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
           color: textBody,
-        ),
-      ),
-    );
-  }
-
-  Widget _teacherCard({
-    required BuildContext context,
-    required Map<String, dynamic> data,
-  }) {
-    final name = data['name'] ?? 'N/A';
-    final specializations = (data['specializations'] as List<dynamic>? ?? [])
-        .join(', ');
-    final imageUrl = data['image'] as String?;
-
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProfessorDetailPage(data: data),
-          ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        decoration: BoxDecoration(
-          color: cardBackground,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 30,
-              backgroundColor: primaryBlue.withOpacity(0.1),
-              backgroundImage: (imageUrl != null && imageUrl.isNotEmpty)
-                  ? NetworkImage(imageUrl)
-                  : null,
-              child: (imageUrl == null || imageUrl.isEmpty)
-                  ? Icon(Icons.person, color: primaryBlue, size: 30)
-                  : null,
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: textBody,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    specializations,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: textSubtle,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Icon(
-              Icons.arrow_forward_ios_rounded,
-              color: Colors.grey,
-              size: 16,
-            ),
-          ],
         ),
       ),
     );
