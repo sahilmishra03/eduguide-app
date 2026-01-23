@@ -122,6 +122,21 @@
                 display: none; 
             }
         }
+
+        /* Feature launch section animations */
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
+        }
+
+        .new-badge {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
     </style>
 </head>
 <body>
@@ -132,9 +147,14 @@
             <h1 class="text-2xl sm:text-3xl font-extrabold text-white">
                 EduGuide
             </h1>
-            <a href="https://drive.google.com/uc?export=download&id=180pyeHaR1CSNY7RPvaMy0LoeFym0fzkb" target="_blank" class="btn cta-button bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-4 sm:px-6 text-sm sm:text-base rounded-full transition duration-300">
-                Download Now ⚡️
-            </a>
+            <div class="flex items-center gap-4">
+                <a href="#new-features" class="text-white hover:text-indigo-400 transition-colors font-medium hidden sm:block">
+                    🎉 New Features
+                </a>
+                <a href="https://drive.google.com/uc?export=download&id=180pyeHaR1CSNY7RPvaMy0LoeFym0fzkb" target="_blank" class="btn cta-button bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-4 sm:px-6 text-sm sm:text-base rounded-full transition duration-300">
+                    Download Now ⚡️
+                </a>
+            </div>
         </div>
     </header>
 
@@ -252,6 +272,67 @@
                 </div>
                 
             </div>
+        </div>
+    </section>
+
+    <!-- New Features Added Section -->
+    <section class="py-20 bg-gradient-to-br from-gray-900 via-indigo-900/20 to-gray-900" id="new-features">
+        <div class="container mx-auto px-4 sm:px-6 text-center">
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-4">🎉 New Features Just Added!</h2>
+            <p class="text-lg text-gray-400 mb-12">Experience the latest updates to EduGuide - now more powerful than ever!</p>
+            
+            <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- Feature 1: Rating System -->
+                <div class="feature-card bg-gray-800/50 backdrop-blur-sm p-6 sm:p-8 rounded-xl shadow-xl border border-green-500/20 hover:border-green-500/40 transition duration-300">
+                    <div class="text-6xl mb-4">⭐</div>
+                    <div class="flex items-center justify-center gap-2 mb-4">
+                        <h3 class="text-2xl font-bold text-white">Professor Rating System</h3>
+                        <span class="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">NEW</span>
+                    </div>
+                    <p class="text-gray-300 mb-6">Rate professors based on teaching quality, availability, and expertise. Help fellow students make informed decisions with real feedback.</p>
+                    
+                    <div class="text-left bg-gray-900/50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-white mb-2">✅ What's included:</h4>
+                        <ul class="text-sm text-gray-300 space-y-1">
+                            <li>• 5-star rating system</li>
+                            <li>• Detailed feedback options</li>
+                            <li>• Anonymous reviews</li>
+                            <li>• Trend analysis</li>
+                            <li>• Real-time ratings</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-4 text-green-400 font-semibold">
+                        <i class="fas fa-check-circle mr-2"></i>Available Now in Latest Version
+                    </div>
+                </div>
+
+                <!-- Feature 2: Email Alerts -->
+                <div class="feature-card bg-gray-800/50 backdrop-blur-sm p-6 sm:p-8 rounded-xl shadow-xl border border-green-500/20 hover:border-green-500/40 transition duration-300">
+                    <div class="text-6xl mb-4">📧</div>
+                    <div class="flex items-center justify-center gap-2 mb-4">
+                        <h3 class="text-2xl font-bold text-white">Email Alerts to Professors</h3>
+                        <span class="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">NEW</span>
+                    </div>
+                    <p class="text-gray-300 mb-6">Send instant email alerts to professors directly through the app. No more copying addresses or switching between apps!</p>
+                    
+                    <div class="text-left bg-gray-900/50 p-4 rounded-lg">
+                        <h4 class="font-semibold text-white mb-2">✅ What's included:</h4>
+                        <ul class="text-sm text-gray-300 space-y-1">
+                            <li>• One-tap email composing</li>
+                            <li>• Email templates</li>
+                            <li>• Delivery tracking</li>
+                            <li>• Auto-availability check</li>
+                            <li>• Smart filtering</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-4 text-green-400 font-semibold">
+                        <i class="fas fa-check-circle mr-2"></i>Available Now in Latest Version
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
 
