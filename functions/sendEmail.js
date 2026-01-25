@@ -9,8 +9,8 @@ const transporter = nodemailer.createTransporter({
   service: 'gmail',
   auth: {
     user: 'sahilmishra03032005@gmail.com', // Your Gmail address
-    pass: 'your-app-password-here'         // Your Google App Password (not regular password)
-  }
+    pass: 'your-app-password-here', // Your Google App Password (not regular password)
+  },
 });
 
 exports.sendEmail = functions.https.onCall(async (data, context) => {

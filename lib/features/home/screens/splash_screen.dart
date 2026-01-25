@@ -2,7 +2,6 @@ import 'package:eduguide/features/auth/screens/login_screen.dart';
 import 'package:eduguide/features/widgets/bottom_navigation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // --- Constants (Synced with other pages) ---
@@ -56,11 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                FontAwesomeIcons.graduationCap,
-                size: 60,
-                color: primaryBlue,
-              ),
+              Image.asset('assets/icon/app_icon.png', width: 60, height: 60),
               const SizedBox(height: 20),
               const Text(
                 "EduGuide",

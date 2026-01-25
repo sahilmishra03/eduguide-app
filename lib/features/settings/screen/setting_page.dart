@@ -6,6 +6,7 @@ import 'package:eduguide/features/settings/services/profile_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -27,12 +28,14 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   final ProfileService _profileService = ProfileService();
   String _userName = 'User';
+  String _appVersion = '1.0.1';
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
     _loadUserProfile();
+    _loadAppVersion();
   }
 
   Future<void> _loadUserProfile() async {
@@ -51,6 +54,19 @@ class _SettingsPageState extends State<SettingsPage> {
           _isLoading = false;
         });
       }
+    }
+  }
+
+  Future<void> _loadAppVersion() async {
+    try {
+      final packageInfo = await PackageInfo.fromPlatform();
+      if (mounted) {
+        setState(() {
+          _appVersion = '${packageInfo.version} (${packageInfo.buildNumber})';
+        });
+      }
+    } catch (e) {
+      debugPrint("Failed to load app version: $e");
     }
   }
 
@@ -175,6 +191,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   ],
                 ),
                 const SizedBox(height: 32),
+                _buildAppVersionTile(),
+                const SizedBox(height: 20),
                 _buildLogoutButton(),
                 const SizedBox(height: 20),
               ],
@@ -237,6 +255,68 @@ class _SettingsPageState extends State<SettingsPage> {
           child: Column(children: children),
         ),
       ],
+    );
+  }
+
+  Widget _buildAppVersionTile() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: cardBackground,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 12,
+          ),
+          leading: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: primaryBlue.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Icon(
+              FontAwesomeIcons.info,
+              color: primaryBlue,
+              size: 20,
+            ),
+          ),
+          title: const Text(
+            'App Version',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+              color: textBody,
+            ),
+          ),
+          subtitle: Text(
+            _appVersion,
+            style: const TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              color: textSubtle,
+            ),
+          ),
+          trailing: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.green.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Text(
+              'v1.0.1',
+              style: TextStyle(
+                color: Colors.green,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 

@@ -1,7 +1,7 @@
 name: eduguide
 description: "A new Flutter project."
 publish_to: 'none'
-version: 0.1.0
+version: 1.0.1
 
 environment:
   sdk: ^3.9.0
@@ -20,6 +20,7 @@ dependencies:
   mailer: ^6.0.1
   dotenv: ^4.2.0
   flutter_dotenv: ^6.0.0
+  package_info_plus: ^8.0.0
 
 dev_dependencies:
   flutter_test:
