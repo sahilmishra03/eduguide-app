@@ -39,6 +39,7 @@
             },
             boxShadow: {
               soft: "0 10px 40px -10px rgba(0,0,0,0.05)",
+              premium: "0 20px 40px -15px rgba(64, 123, 255, 0.2)",
             },
           },
         },
@@ -67,33 +68,30 @@
 
       /* --- Custom UI Elements --- */
       .glass-nav {
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(12px);
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.03);
       }
 
       .feature-card {
         background: white;
         border-radius: 1.5rem;
         border: 1px solid rgba(0, 0, 0, 0.03);
-        box-shadow:
-          0 4px 6px -1px rgba(0, 0, 0, 0.02),
-          0 2px 4px -1px rgba(0, 0, 0, 0.02);
-        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
       .feature-card:hover {
-        transform: translateY(-5px);
-        box-shadow:
-          0 20px 25px -5px rgba(0, 0, 0, 0.05),
-          0 10px 10px -5px rgba(0, 0, 0, 0.02);
-        border-color: rgba(64, 123, 255, 0.3);
+        transform: translateY(-8px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(64, 123, 255, 0.1);
+        border-color: rgba(64, 123, 255, 0.25);
       }
 
       .video-container {
         position: relative;
         border-radius: 1.5rem;
         overflow: hidden;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
         border: 8px solid white;
       }
 
@@ -102,7 +100,7 @@
         border-radius: 2.5rem;
         overflow: hidden;
         background: #000;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
         position: relative;
       }
 
@@ -110,55 +108,47 @@
       .modal {
         opacity: 0;
         visibility: hidden;
-        transition: all 0.3s ease-in-out;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
       .modal.active {
         opacity: 1;
         visibility: visible;
       }
       .modal-content {
-        transform: scale(0.95);
-        transition: all 0.3s ease-in-out;
+        transform: scale(0.95) translateY(10px);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
       .modal.active .modal-content {
-        transform: scale(1);
+        transform: scale(1) translateY(0);
       }
     </style>
   </head>
   <body class="flex flex-col min-h-screen">
-    <header class="fixed top-0 w-full z-50 glass-nav">
-      <div
-        class="container mx-auto px-6 h-20 flex justify-between items-center"
-      >
-        <a href="#" class="flex items-center gap-2 group">
-          <div
-            class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/30"
-          >
+    
+    <div class="bg-primary text-white text-center py-3 px-4 text-xs sm:text-sm font-semibold w-full relative z-[60] tracking-wide uppercase">
+      For now we are using temp data. If any institute is interested to use this, feel free to contact: 
+      <a href="mailto:openforgein@gmail.com" class="underline font-bold hover:text-blue-100 ml-1 transition-colors">openforgein@gmail.com</a>
+    </div>
+
+    <header class="sticky top-0 w-full z-50 glass-nav">
+      <div class="container mx-auto px-6 h-20 flex justify-between items-center">
+        <a href="#" class="flex items-center gap-3 group">
+          <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/30 transform group-hover:scale-105 transition-transform">
             E
           </div>
-          <span class="text-xl font-bold text-textMain tracking-tight"
-            >EduGuide</span
-          >
+          <span class="text-2xl font-extrabold text-textMain tracking-tight">EduGuide</span>
         </a>
 
-        <nav
-          class="hidden md:flex items-center gap-8 text-sm font-medium text-textSubtle"
-        >
-          <a href="#key-features" class="hover:text-primary transition-colors"
-            >Key Features</a
-          >
-          <a href="#demo" class="hover:text-primary transition-colors"
-            >Watch Demo</a
-          >
-          <a href="#roadmap" class="hover:text-primary transition-colors"
-            >Roadmap & Updates</a
-          >
+        <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-textSubtle">
+          <a href="#key-features" class="hover:text-primary transition-colors">Key Features</a>
+          <a href="#demo" class="hover:text-primary transition-colors">Watch Demo</a>
+          <a href="#roadmap" class="hover:text-primary transition-colors">Roadmap & Updates</a>
         </nav>
 
         <a
-          href="https://drive.usercontent.google.com/download?id=1Wr3IqYVE6PAhmIxaFmMak3I0B7jZ2vWi&export=download&authuser=0"
+          href="https://mega.nz/file/Yzt0nD7D#LF19kyryDO7ms66bfR_e0dCPtiHakzjpAfLn39zqduk"
           target="_blank"
-          class="bg-primary hover:bg-primaryDark text-white font-semibold py-2.5 px-6 rounded-full transition-all duration-300 shadow-lg shadow-blue-500/30 text-sm flex items-center gap-2 transform hover:-translate-y-0.5"
+          class="bg-primary hover:bg-primaryDark text-white font-semibold py-2.5 px-6 rounded-full transition-all duration-300 shadow-md text-sm flex items-center gap-2 transform hover:-translate-y-0.5"
         >
           <span>Download App</span>
           <i class="fas fa-download"></i>
@@ -166,115 +156,88 @@
       </div>
     </header>
 
-    <main class="flex-grow pt-20">
-      <section class="relative pt-20 pb-28 lg:pt-32 overflow-hidden">
-        <div
-          class="absolute -top-40 -right-40 w-[600px] h-[600px] bg-blue-100 rounded-full blur-3xl opacity-50 -z-10"
-        ></div>
+    <main class="flex-grow">
+      <section class="relative pt-24 pb-32 lg:pt-36 overflow-hidden">
+        <div class="absolute -top-40 -right-40 w-[600px] h-[600px] bg-blue-200/50 rounded-full blur-[100px] opacity-60 -z-10"></div>
+        <div class="absolute top-40 -left-20 w-[400px] h-[400px] bg-blue-100/50 rounded-full blur-[80px] opacity-40 -z-10"></div>
 
-        <div
-          class="container mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center"
-        >
+        <div class="container mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
           <div class="text-center lg:text-left fade-up">
-            <div
-              class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-primary text-xs font-bold uppercase tracking-wide mb-6"
-            >
-              <span
-                class="w-2 h-2 rounded-full bg-primary animate-pulse"
-              ></span>
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-blue-100 text-primary text-xs font-bold uppercase tracking-wide mb-8 shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
               Academic Guidance Simplified
             </div>
 
-            <h1
-              class="text-5xl lg:text-6xl font-extrabold text-textMain leading-[1.1] mb-6 tracking-tight"
-            >
+            <h1 class="text-5xl lg:text-7xl font-extrabold text-textMain leading-[1.1] mb-6 tracking-tight">
               Find Experts. <br />
               <span class="text-primary">Connect Instantly.</span>
             </h1>
 
-            <p
-              class="text-lg text-textSubtle mb-8 leading-relaxed max-w-lg mx-auto lg:mx-0"
-            >
+            <p class="text-lg text-textSubtle mb-10 leading-relaxed max-w-lg mx-auto lg:mx-0">
               Detailed teacher profiles, real-time availability tracking, and
               instant appointment scheduling. The smartest way to navigate your
               campus.
             </p>
 
-            <div
-              class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4"
-            >
+            <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
               <a
-                href="https://drive.usercontent.google.com/download?id=1Wr3IqYVE6PAhmIxaFmMak3I0B7jZ2vWi&export=download&authuser=0"
+                href="https://mega.nz/file/Yzt0nD7D#LF19kyryDO7ms66bfR_e0dCPtiHakzjpAfLn39zqduk"
                 target="_blank"
-                class="bg-primary hover:bg-primaryDark text-white font-bold text-lg py-4 px-8 rounded-xl w-full sm:w-auto text-center shadow-xl shadow-primary/20 transition-all transform hover:-translate-y-1"
+                class="bg-primary hover:bg-primaryDark text-white font-bold text-lg py-4 px-8 rounded-xl w-full sm:w-auto text-center shadow-premium transition-all transform hover:-translate-y-1"
               >
                 Get for Android
               </a>
               <a
                 href="#key-features"
-                class="bg-white text-textMain border border-gray-200 hover:border-primary/50 hover:bg-gray-50 font-semibold py-4 px-8 rounded-xl transition-all duration-200 w-full sm:w-auto text-center"
+                class="bg-white text-textMain border border-gray-200 hover:border-primary/30 hover:bg-blue-50/50 font-semibold py-4 px-8 rounded-xl transition-all duration-200 w-full sm:w-auto text-center shadow-sm"
               >
                 Explore Features
               </a>
             </div>
 
-            <div
-              class="mt-10 flex items-center justify-center lg:justify-start gap-4 text-sm text-textSubtle"
-            >
-              <div class="flex -space-x-2">
-                <div
-                  class="w-8 h-8 rounded-full bg-gray-200 border-2 border-white"
-                ></div>
-                <div
-                  class="w-8 h-8 rounded-full bg-gray-300 border-2 border-white"
-                ></div>
-                <div
-                  class="w-8 h-8 rounded-full bg-gray-400 border-2 border-white"
-                ></div>
+            <div class="mt-12 flex items-center justify-center lg:justify-start gap-4 text-sm text-textSubtle">
+              <div class="flex -space-x-3">
+                <div class="w-10 h-10 rounded-full bg-gray-200 border-2 border-secondary overflow-hidden"><img src="https://i.pravatar.cc/100?img=1" alt="User"></div>
+                <div class="w-10 h-10 rounded-full bg-gray-300 border-2 border-secondary overflow-hidden"><img src="https://i.pravatar.cc/100?img=2" alt="User"></div>
+                <div class="w-10 h-10 rounded-full bg-gray-400 border-2 border-secondary overflow-hidden"><img src="https://i.pravatar.cc/100?img=3" alt="User"></div>
+                <div class="w-10 h-10 rounded-full bg-white border-2 border-secondary flex items-center justify-center font-bold text-xs text-primary shadow-sm">+500</div>
               </div>
-              <p class="font-medium">Trusted by 500+ Students</p>
+              <p class="font-medium text-gray-600">Trusted by students</p>
             </div>
           </div>
 
-          <div
-            class="relative fade-up lg:translate-x-8"
-            style="animation-delay: 0.2s"
-          >
-            <div
-              class="relative z-10 bg-white rounded-3xl p-6 shadow-2xl border border-gray-100 rotate-1 hover:rotate-0 transition-transform duration-500"
-            >
-              <div
-                class="flex items-center justify-between mb-6 border-b border-gray-100 pb-4"
-              >
-                <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 bg-gray-200 rounded-full"></div>
+          <div class="relative fade-up lg:translate-x-8" style="animation-delay: 0.2s">
+            <div class="relative z-10 bg-white rounded-3xl p-8 shadow-2xl border border-gray-100/50 rotate-2 hover:rotate-0 transition-transform duration-500">
+              <div class="flex items-center justify-between mb-8 border-b border-gray-100 pb-6">
+                <div class="flex items-center gap-4">
+                  <div class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center text-primary text-xl">
+                    <i class="fas fa-user-tie"></i>
+                  </div>
                   <div>
-                    <h3 class="text-lg font-bold text-textMain">
+                    <h3 class="text-xl font-bold text-textMain">
                       Dr. R.K. Sharma
                     </h3>
-                    <p class="text-sm text-textSubtle">
+                    <p class="text-sm font-medium text-textSubtle">
                       HOD • Computer Science
                     </p>
                   </div>
                 </div>
-                <span
-                  class="bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1"
-                >
-                  <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                <span class="bg-green-50 text-green-600 text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-2 border border-green-100 shadow-sm">
+                  <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                   Available
                 </span>
               </div>
               <div class="grid grid-cols-2 gap-4">
-                <div class="bg-gray-50 p-4 rounded-xl">
-                  <p class="text-xs text-textSubtle uppercase font-bold mb-1">
+                <div class="bg-secondary p-5 rounded-2xl border border-gray-100">
+                  <p class="text-xs text-textSubtle uppercase font-bold mb-2 tracking-wider">
                     Specialization
                   </p>
                   <p class="text-sm font-bold text-textMain">
                     Machine Learning
                   </p>
                 </div>
-                <div class="bg-gray-50 p-4 rounded-xl">
-                  <p class="text-xs text-textSubtle uppercase font-bold mb-1">
+                <div class="bg-secondary p-5 rounded-2xl border border-gray-100">
+                  <p class="text-xs text-textSubtle uppercase font-bold mb-2 tracking-wider">
                     Office
                   </p>
                   <p class="text-sm font-bold text-textMain">
@@ -282,48 +245,33 @@
                   </p>
                 </div>
               </div>
-              <div class="mt-6">
-                <button
-                  class="w-full bg-black text-white font-bold py-3 rounded-xl hover:bg-gray-800 transition-colors"
-                >
+              <div class="mt-8">
+                <button class="w-full bg-textMain text-white font-bold py-3.5 rounded-xl hover:bg-gray-800 transition-colors shadow-md">
                   View Profile
                 </button>
               </div>
             </div>
-            <div
-              class="absolute -bottom-10 -left-10 w-40 h-40 bg-primary/10 rounded-full -z-10"
-            ></div>
+            <div class="absolute -bottom-12 -left-12 w-48 h-48 bg-primary/10 rounded-full -z-10 blur-2xl"></div>
           </div>
         </div>
       </section>
 
       <section id="demo" class="py-24 bg-white border-y border-gray-100">
         <div class="container mx-auto px-6 text-center">
-          <span
-            class="text-primary font-bold tracking-widest text-sm uppercase mb-3 block"
-            >App Walkthrough</span
-          >
+          <span class="text-primary font-bold tracking-widest text-sm uppercase mb-3 block">App Walkthrough</span>
           <h2 class="text-4xl font-extrabold text-textMain mb-6">
             See EduGuide in Action
           </h2>
           <p class="text-textSubtle text-lg mb-12 max-w-2xl mx-auto">
             Watch how easy it is to find the right faculty mentor and check
-            their real-time availability.
+            their real-time availability in just a few taps.
           </p>
 
           <div class="max-w-5xl mx-auto">
-            <div
-              class="video-container aspect-video bg-black group cursor-pointer relative"
-            >
-              <div
-                class="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/30 transition-all z-20"
-              >
-                <div
-                  class="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/50 group-hover:scale-110 transition-transform"
-                >
-                  <div
-                    class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-primary pl-1 shadow-xl"
-                  >
+            <div class="video-container aspect-video bg-gray-900 group cursor-pointer relative">
+              <div class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-all z-20">
+                <div class="w-24 h-24 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center border border-white/50 group-hover:scale-110 transition-transform shadow-2xl">
+                  <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-primary pl-1 shadow-lg">
                     <i class="fas fa-play text-2xl"></i>
                   </div>
                 </div>
@@ -331,12 +279,11 @@
               <img
                 src="https://placehold.co/1280x720/1d1d1f/ffffff?text=EduGuide+App+Demo"
                 alt="Demo Video Thumbnail"
-                class="w-full h-full object-cover opacity-80"
+                class="w-full h-full object-cover"
               />
             </div>
-            <p class="mt-6 text-sm text-textSubtle font-medium">
-              <i class="fas fa-info-circle mr-2"></i> Full product tour coming
-              soon.
+            <p class="mt-6 text-sm text-textSubtle font-medium flex items-center justify-center gap-2">
+              <i class="fas fa-info-circle text-primary"></i> Full product tour coming soon.
             </p>
           </div>
         </div>
@@ -345,118 +292,106 @@
       <section id="key-features" class="py-24 bg-secondary">
         <div class="container mx-auto px-6">
           <div class="text-center mb-20">
-            <h2 class="text-3xl lg:text-4xl font-extrabold text-textMain mb-4">
+            <h2 class="text-4xl font-extrabold text-textMain mb-4">
               Powerful Features
             </h2>
             <p class="text-textSubtle text-lg">
-              Everything you need to navigate your academic network.
+              Everything you need to navigate your academic network effortlessly.
             </p>
           </div>
 
           <div class="grid md:grid-cols-2 gap-8">
-            <div
-              class="feature-card p-10 flex flex-col h-full hover:border-blue-300"
-            >
-              <div
-                class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center text-primary text-2xl mb-6"
-              >
+            <div class="feature-card p-10 flex flex-col h-full hover:border-blue-300">
+              <div class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-primary text-2xl mb-8">
                 <i class="fas fa-id-card"></i>
               </div>
-              <h4 class="text-2xl font-bold text-textMain mb-3">
+              <h4 class="text-2xl font-bold text-textMain mb-4">
                 Teacher Profiles
               </h4>
-              <p class="text-textSubtle leading-relaxed mb-6">
+              <p class="text-textSubtle leading-relaxed mb-8">
                 Comprehensive profiles featuring qualifications, research areas,
                 office location, and contact details. Get quick insights into a
                 teacher's expertise.
               </p>
-              <ul class="mt-auto space-y-2 text-sm font-medium text-gray-600">
-                <li class="flex items-center gap-2">
-                  <i class="fas fa-check text-green-500"></i> View
-                  Specializations
+              <ul class="mt-auto space-y-3 text-sm font-semibold text-textMain">
+                <li class="flex items-center gap-3">
+                  <div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600"><i class="fas fa-check text-xs"></i></div>
+                  View Specializations
                 </li>
-                <li class="flex items-center gap-2">
-                  <i class="fas fa-check text-green-500"></i> Research Interests
+                <li class="flex items-center gap-3">
+                  <div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600"><i class="fas fa-check text-xs"></i></div>
+                  Research Interests
                 </li>
               </ul>
             </div>
 
-            <div
-              class="feature-card p-10 flex flex-col h-full hover:border-green-300"
-            >
-              <div
-                class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center text-green-600 text-2xl mb-6"
-              >
+            <div class="feature-card p-10 flex flex-col h-full hover:border-green-300">
+              <div class="w-14 h-14 bg-green-50 rounded-2xl flex items-center justify-center text-green-500 text-2xl mb-8">
                 <i class="fas fa-calendar-check"></i>
               </div>
-              <h4 class="text-2xl font-bold text-textMain mb-3">
+              <h4 class="text-2xl font-bold text-textMain mb-4">
                 Availability Tracking
               </h4>
-              <p class="text-textSubtle leading-relaxed mb-6">
+              <p class="text-textSubtle leading-relaxed mb-8">
                 No more wasted trips. Our system automatically detects free
                 slots by syncing with the dean's schedule, providing real-time
                 updates.
               </p>
-              <ul class="mt-auto space-y-2 text-sm font-medium text-gray-600">
-                <li class="flex items-center gap-2">
-                  <i class="fas fa-check text-green-500"></i> Auto-Slot
-                  Detection
+              <ul class="mt-auto space-y-3 text-sm font-semibold text-textMain">
+                <li class="flex items-center gap-3">
+                  <div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600"><i class="fas fa-check text-xs"></i></div>
+                  Auto-Slot Detection
                 </li>
-                <li class="flex items-center gap-2">
-                  <i class="fas fa-check text-green-500"></i> Conflict
-                  Prevention
+                <li class="flex items-center gap-3">
+                  <div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600"><i class="fas fa-check text-xs"></i></div>
+                  Conflict Prevention
                 </li>
               </ul>
             </div>
 
-            <div
-              class="feature-card p-10 flex flex-col h-full hover:border-purple-300"
-            >
-              <div
-                class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center text-purple-600 text-2xl mb-6"
-              >
+            <div class="feature-card p-10 flex flex-col h-full hover:border-purple-300">
+              <div class="w-14 h-14 bg-purple-50 rounded-2xl flex items-center justify-center text-purple-500 text-2xl mb-8">
                 <i class="fas fa-search"></i>
               </div>
-              <h4 class="text-2xl font-bold text-textMain mb-3">
+              <h4 class="text-2xl font-bold text-textMain mb-4">
                 Advanced Search & Filters
               </h4>
-              <p class="text-textSubtle leading-relaxed mb-6">
+              <p class="text-textSubtle leading-relaxed mb-8">
                 Find exactly who you need. Filter teachers by Department,
                 Specialization, or Current Availability with instant
                 autocomplete.
               </p>
-              <ul class="mt-auto space-y-2 text-sm font-medium text-gray-600">
-                <li class="flex items-center gap-2">
-                  <i class="fas fa-check text-green-500"></i> Smart Filtering
+              <ul class="mt-auto space-y-3 text-sm font-semibold text-textMain">
+                <li class="flex items-center gap-3">
+                  <div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600"><i class="fas fa-check text-xs"></i></div>
+                  Smart Filtering
                 </li>
-                <li class="flex items-center gap-2">
-                  <i class="fas fa-check text-green-500"></i> Instant Results
+                <li class="flex items-center gap-3">
+                  <div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600"><i class="fas fa-check text-xs"></i></div>
+                  Instant Results
                 </li>
               </ul>
             </div>
 
-            <div
-              class="feature-card p-10 flex flex-col h-full hover:border-orange-300"
-            >
-              <div
-                class="w-14 h-14 bg-orange-100 rounded-2xl flex items-center justify-center text-orange-500 text-2xl mb-6"
-              >
+            <div class="feature-card p-10 flex flex-col h-full hover:border-orange-300">
+              <div class="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-500 text-2xl mb-8">
                 <i class="fas fa-sync-alt"></i>
               </div>
-              <h4 class="text-2xl font-bold text-textMain mb-3">
+              <h4 class="text-2xl font-bold text-textMain mb-4">
                 Real-Time Sync
               </h4>
-              <p class="text-textSubtle leading-relaxed mb-6">
+              <p class="text-textSubtle leading-relaxed mb-8">
                 Powered by Firebase Firestore. Timetables and teacher statuses
                 update live across all devices instantly.
               </p>
-              <ul class="mt-auto space-y-2 text-sm font-medium text-gray-600">
-                <li class="flex items-center gap-2">
-                  <i class="fas fa-check text-green-500"></i> Live Data Updates
+              <ul class="mt-auto space-y-3 text-sm font-semibold text-textMain">
+                <li class="flex items-center gap-3">
+                  <div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600"><i class="fas fa-check text-xs"></i></div>
+                  Live Data Updates
                 </li>
-                <li class="flex items-center gap-2">
-                  <i class="fas fa-check text-green-500"></i> Multi-device
-                  Support
+                <li class="flex items-center gap-3">
+                  <div class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600"><i class="fas fa-check text-xs"></i></div>
+                  Multi-device Support
                 </li>
               </ul>
             </div>
@@ -464,106 +399,81 @@
         </div>
       </section>
 
-      <section id="roadmap" class="py-24 bg-white relative">
+      <section id="roadmap" class="py-24 bg-white relative border-t border-gray-100">
         <div class="container mx-auto px-6 relative z-10">
-          <div
-            class="flex flex-col md:flex-row justify-between items-end mb-12"
-          >
+          <div class="flex flex-col md:flex-row justify-between items-end mb-12">
             <div>
-              <span
-                class="text-primary font-bold tracking-widest text-sm uppercase mb-2 block"
-                >Roadmap</span
-              >
+              <span class="text-primary font-bold tracking-widest text-sm uppercase mb-2 block">Roadmap</span>
               <h2 class="text-3xl lg:text-4xl font-extrabold text-textMain">
                 Features & Updates
               </h2>
             </div>
             <div class="mt-4 md:mt-0 flex items-center gap-3">
-              <span
-                class="px-4 py-2 bg-gray-100 rounded-lg text-xs font-mono font-bold text-textSubtle border border-gray-200"
-                >v1.0.1</span
-              >
+              <span class="px-4 py-2 bg-gray-50 rounded-lg text-xs font-mono font-bold text-textSubtle border border-gray-200">v1.0.1</span>
             </div>
           </div>
 
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div
-              class="bg-gray-50 p-8 rounded-2xl border border-gray-100 relative overflow-hidden"
-            >
-              <div
-                class="absolute top-0 right-0 bg-green-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider"
-              >
+            <div class="bg-secondary p-8 rounded-2xl border border-gray-100 relative overflow-hidden transition-shadow hover:shadow-md">
+              <div class="absolute top-0 right-0 bg-green-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
                 Live
               </div>
               <div class="flex items-center gap-4 mb-4">
-                <div class="bg-white p-3 rounded-lg text-green-600 shadow-sm">
+                <div class="bg-white p-3 rounded-xl text-green-600 shadow-sm">
                   <i class="fas fa-star text-xl"></i>
                 </div>
                 <h3 class="text-lg font-bold text-textMain">
                   Professor Ratings
                 </h3>
               </div>
-              <p class="text-textSubtle text-sm">
+              <p class="text-textSubtle text-sm leading-relaxed">
                 Students can rate teaching quality and availability anonymously.
               </p>
             </div>
 
-            <div
-              class="bg-gray-50 p-8 rounded-2xl border border-gray-100 relative overflow-hidden"
-            >
-              <div
-                class="absolute top-0 right-0 bg-green-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider"
-              >
+            <div class="bg-secondary p-8 rounded-2xl border border-gray-100 relative overflow-hidden transition-shadow hover:shadow-md">
+              <div class="absolute top-0 right-0 bg-green-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
                 Live
               </div>
               <div class="flex items-center gap-4 mb-4">
-                <div class="bg-white p-3 rounded-lg text-blue-600 shadow-sm">
+                <div class="bg-white p-3 rounded-xl text-primary shadow-sm">
                   <i class="fas fa-envelope text-xl"></i>
                 </div>
                 <h3 class="text-lg font-bold text-textMain">Email Support</h3>
               </div>
-              <p class="text-textSubtle text-sm">
-                One-tap professional email templates to contact teachers
-                instantly.
+              <p class="text-textSubtle text-sm leading-relaxed">
+                One-tap professional email templates to contact teachers instantly.
               </p>
             </div>
 
-            <div
-              class="bg-gray-50 p-8 rounded-2xl border border-gray-100 relative overflow-hidden opacity-90"
-            >
-              <div
-                class="absolute top-0 right-0 bg-orange-400 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider"
-              >
+            <div class="bg-secondary p-8 rounded-2xl border border-gray-100 relative overflow-hidden transition-shadow hover:shadow-md opacity-90">
+              <div class="absolute top-0 right-0 bg-orange-400 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
                 Soon
               </div>
               <div class="flex items-center gap-4 mb-4">
-                <div class="bg-white p-3 rounded-lg text-orange-500 shadow-sm">
+                <div class="bg-white p-3 rounded-xl text-orange-500 shadow-sm">
                   <i class="fas fa-calendar-alt text-xl"></i>
                 </div>
                 <h3 class="text-lg font-bold text-textMain">Booking System</h3>
               </div>
-              <p class="text-textSubtle text-sm">
+              <p class="text-textSubtle text-sm leading-relaxed">
                 Directly book appointment slots pending teacher approval.
               </p>
             </div>
 
-            <div
-              class="bg-gray-50 p-8 rounded-2xl border border-gray-100 relative overflow-hidden opacity-90"
-            >
-              <div
-                class="absolute top-0 right-0 bg-orange-400 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider"
-              >
+            <div class="bg-secondary p-8 rounded-2xl border border-gray-100 relative overflow-hidden transition-shadow hover:shadow-md opacity-90">
+              <div class="absolute top-0 right-0 bg-orange-400 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
                 Soon
               </div>
               <div class="flex items-center gap-4 mb-4">
-                <div class="bg-white p-3 rounded-lg text-orange-500 shadow-sm">
+                <div class="bg-white p-3 rounded-xl text-orange-500 shadow-sm">
                   <i class="fas fa-robot text-xl"></i>
                 </div>
                 <h3 class="text-lg font-bold text-textMain">
                   AI Study Assistant
                 </h3>
               </div>
-              <p class="text-textSubtle text-sm">
+              <p class="text-textSubtle text-sm leading-relaxed">
                 Get smart study tips and resource recommendations tailored to
                 your courses.
               </p>
@@ -572,58 +482,75 @@
         </div>
       </section>
 
-      <section class="py-24 bg-secondary">
+      <section class="py-24 bg-white border-t border-gray-100 overflow-hidden">
         <div class="container mx-auto px-6 text-center">
           <h2 class="text-3xl font-bold text-textMain mb-16">A Peek Inside</h2>
 
           <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div
-              class="mockup-frame aspect-[9/19] hover:-translate-y-2 transition-transform duration-300"
-            >
+            <div class="mockup-frame aspect-[9/19] hover:-translate-y-3 transition-transform duration-500 shadow-2xl">
               <img
                 src="assets/mockup/image1.jpeg"
-                onerror="
-                  this.src =
-                    'https://placehold.co/400x850/F7F7FD/407BFF?text=Home'
-                "
+                onerror="this.src='https://placehold.co/400x850/F7F7FD/407BFF?text=Home'"
                 class="w-full h-full object-cover"
               />
             </div>
-            <div
-              class="mockup-frame aspect-[9/19] hover:-translate-y-2 transition-transform duration-300 mt-8 md:mt-0"
-            >
+            <div class="mockup-frame aspect-[9/19] hover:-translate-y-3 transition-transform duration-500 mt-8 md:mt-0 shadow-2xl">
               <img
                 src="assets/mockup/image2.jpeg"
-                onerror="
-                  this.src =
-                    'https://placehold.co/400x850/F7F7FD/407BFF?text=Search'
-                "
+                onerror="this.src='https://placehold.co/400x850/F7F7FD/407BFF?text=Search'"
                 class="w-full h-full object-cover"
               />
             </div>
-            <div
-              class="mockup-frame aspect-[9/19] hover:-translate-y-2 transition-transform duration-300"
-            >
+            <div class="mockup-frame aspect-[9/19] hover:-translate-y-3 transition-transform duration-500 shadow-2xl">
               <img
                 src="assets/mockup/image3.jpeg"
-                onerror="
-                  this.src =
-                    'https://placehold.co/400x850/F7F7FD/407BFF?text=Profile'
-                "
+                onerror="this.src='https://placehold.co/400x850/F7F7FD/407BFF?text=Profile'"
                 class="w-full h-full object-cover"
               />
             </div>
-            <div
-              class="mockup-frame aspect-[9/19] hover:-translate-y-2 transition-transform duration-300 mt-8 md:mt-0"
-            >
+            <div class="mockup-frame aspect-[9/19] hover:-translate-y-3 transition-transform duration-500 mt-8 md:mt-0 shadow-2xl">
               <img
                 src="assets/mockup/image4.jpeg"
-                onerror="
-                  this.src =
-                    'https://placehold.co/400x850/F7F7FD/407BFF?text=Status'
-                "
+                onerror="this.src='https://placehold.co/400x850/F7F7FD/407BFF?text=Status'"
                 class="w-full h-full object-cover"
               />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="py-24 bg-secondary border-t border-gray-100 relative">
+        <div class="container mx-auto px-6 relative z-10">
+          <div class="bg-primary rounded-[2.5rem] p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-12 shadow-premium overflow-hidden relative">
+            
+            <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full -translate-y-1/2 translate-x-1/3"></div>
+            <div class="absolute bottom-0 left-0 w-48 h-48 bg-primaryDark opacity-30 rounded-full translate-y-1/3 -translate-x-1/4"></div>
+
+            <div class="flex-1 text-center md:text-left relative z-10">
+              <h2 class="text-4xl font-extrabold text-white mb-6">Ready to Simplify Your Academic Life?</h2>
+              <p class="text-blue-100 text-lg mb-10 max-w-xl mx-auto md:mx-0 leading-relaxed">
+                Download the EduGuide app today. Connect with professors, track schedules in real-time, and make the most out of your campus network.
+              </p>
+              <div class="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
+                <a
+                  href="https://mega.nz/file/Yzt0nD7D#LF19kyryDO7ms66bfR_e0dCPtiHakzjpAfLn39zqduk"
+                  target="_blank"
+                  class="bg-white text-primary font-bold py-4 px-8 rounded-xl hover:bg-gray-50 transition-all flex items-center gap-3 shadow-lg transform hover:-translate-y-1"
+                >
+                  <i class="fab fa-android text-xl"></i>
+                  <span>Download APK</span>
+                </a>
+              </div>
+            </div>
+
+            <div class="flex-shrink-0 bg-white p-5 rounded-3xl shadow-2xl transform hover:scale-105 transition-transform duration-500 relative z-10">
+              <img 
+                src="assets/QR CODE.png" 
+                alt="Scan to Download EduGuide" 
+                class="w-40 h-40 md:w-48 md:h-48 rounded-xl object-contain"
+                onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://mega.nz/file/Yzt0nD7D%23LF19kyryDO7ms66bfR_e0dCPtiHakzjpAfLn39zqduk&color=407BFF'"
+              />
+              <p class="text-textMain text-xs font-bold text-center mt-4 uppercase tracking-wider">Scan to Download</p>
             </div>
           </div>
         </div>
@@ -632,259 +559,116 @@
 
     <footer class="bg-white border-t border-gray-200 pt-16 pb-8">
       <div class="container mx-auto px-6 text-center">
-        <div class="flex items-center justify-center gap-2 mb-6">
-          <div
-            class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white text-lg font-bold shadow-md"
-          >
+        <div class="flex items-center justify-center gap-3 mb-8">
+          <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white text-xl font-bold shadow-md">
             E
           </div>
-          <span class="text-2xl font-bold text-textMain">EduGuide</span>
+          <span class="text-2xl font-extrabold text-textMain">EduGuide</span>
         </div>
 
-        <p class="text-textSubtle text-sm mb-8 max-w-md mx-auto">
+        <p class="text-textSubtle text-sm mb-10 max-w-md mx-auto leading-relaxed">
           Bridging the gap between students and faculty with modern technology.
         </p>
 
-        <div
-          class="flex items-center justify-center gap-1 mb-8 text-sm font-medium text-textMain bg-gray-50 px-5 py-3 rounded-full border border-gray-100 inline-block mx-auto"
-        >
-          <span
-            >Designed with
-            <span class="text-red-500 animate-pulse">❤️</span> by</span
-          >
-          <a
-            href="https://www.linkedin.com/in/krishgupta7/"
-            target="_blank"
-            class="text-primary font-bold hover:underline transition-colors"
-            >Krish</a
-          >
-          <span>&</span>
-          <a
-            href="https://www.linkedin.com/in/sahilmishra03/"
-            target="_blank"
-            class="text-primary font-bold hover:underline transition-colors"
-            >Sahil</a
-          >
+        <div class="flex items-center justify-center gap-1.5 mb-10 text-sm font-medium text-textMain bg-secondary px-6 py-3 rounded-full border border-gray-200 inline-block mx-auto shadow-sm">
+          <span>Designed with <span class="text-red-500 animate-pulse">❤️</span> by</span>
+          <a href="https://www.linkedin.com/in/krishgupta7/" target="_blank" class="font-bold text-primary hover:text-primaryDark transition-colors">Krish</a>
+          <span class="text-gray-400">&</span>
+          <a href="https://www.linkedin.com/in/sahilmishra03/" target="_blank" class="font-bold text-primary hover:text-primaryDark transition-colors">Sahil</a>
         </div>
 
-        <div
-          class="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-textSubtle"
-        >
+        <div class="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-textSubtle font-medium">
           <p>&copy; 2026 EduGuide. All rights reserved.</p>
           <div class="flex gap-6">
-            <a
-              href="javascript:void(0)"
-              onclick="openModal('privacyModal')"
-              class="hover:text-primary transition-colors"
-              >Privacy Policy</a
-            >
-            <a
-              href="javascript:void(0)"
-              onclick="openModal('termsModal')"
-              class="hover:text-primary transition-colors"
-              >Terms of Service</a
-            >
-            <a
-              href="javascript:void(0)"
-              onclick="openModal('contactModal')"
-              class="hover:text-primary transition-colors"
-              >Contact Support</a
-            >
+            <a href="javascript:void(0)" onclick="openModal('privacyModal')" class="hover:text-primary transition-colors">Privacy Policy</a>
+            <a href="javascript:void(0)" onclick="openModal('termsModal')" class="hover:text-primary transition-colors">Terms of Service</a>
+            <a href="javascript:void(0)" onclick="openModal('contactModal')" class="hover:text-primary transition-colors">Contact Support</a>
           </div>
         </div>
       </div>
     </footer>
 
-    <div
-      id="privacyModal"
-      class="modal fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
-    >
-      <div
-        class="modal-content bg-white w-full max-w-2xl max-h-[80vh] overflow-y-auto rounded-3xl p-8 relative shadow-2xl"
-      >
-        <button
-          onclick="closeModal('privacyModal')"
-          class="absolute top-6 right-6 w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors text-textMain"
-        >
+    <div id="privacyModal" class="modal fixed inset-0 z-[100] flex items-center justify-center bg-textMain/40 backdrop-blur-sm p-4">
+      <div class="modal-content bg-white w-full max-w-2xl max-h-[80vh] overflow-y-auto rounded-3xl p-10 relative shadow-2xl">
+        <button onclick="closeModal('privacyModal')" class="absolute top-6 right-6 w-10 h-10 bg-secondary rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors text-textMain">
           <i class="fas fa-times"></i>
         </button>
-        <h2 class="text-2xl font-black text-textMain mb-4">Privacy Policy</h2>
+        <h2 class="text-3xl font-extrabold text-textMain mb-6">Privacy Policy</h2>
         <div class="prose prose-sm text-textSubtle">
-          <p class="mb-4"><strong>Effective Date:</strong> January 26, 2026</p>
-          <p class="mb-4">
-            At EduGuide, we prioritize your privacy. This policy outlines how we
-            handle your data.
-          </p>
-          <h3 class="text-lg font-bold text-textMain mb-2">
-            1. Data Collection
-          </h3>
-          <p class="mb-4">
-            EduGuide uses Firebase to store teacher schedules and availability.
-            We do not collect personal student data unless you voluntarily
-            provide it for feedback.
-          </p>
-          <h3 class="text-lg font-bold text-textMain mb-2">2. Usage</h3>
-          <p class="mb-4">
-            App data is used solely to provide real-time availability tracking
-            and facilitate communication between students and faculty.
-          </p>
-          <div class="mt-8 text-center">
-            <button
-              onclick="closeModal('privacyModal')"
-              class="bg-primary text-white px-8 py-3 rounded-full font-bold hover:bg-primaryDark transition-colors"
-            >
-              Close
-            </button>
+          <p class="mb-4 text-sm font-medium bg-secondary inline-block px-3 py-1 rounded-md border border-gray-100">Effective Date: January 26, 2026</p>
+          <p class="mb-6 leading-relaxed">At EduGuide, we prioritize your privacy. This policy outlines how we handle your data.</p>
+          <h3 class="text-lg font-bold text-textMain mb-3">1. Data Collection</h3>
+          <p class="mb-6 leading-relaxed">EduGuide uses Firebase to store teacher schedules and availability. We do not collect personal student data unless you voluntarily provide it for feedback.</p>
+          <h3 class="text-lg font-bold text-textMain mb-3">2. Usage</h3>
+          <p class="mb-8 leading-relaxed">App data is used solely to provide real-time availability tracking and facilitate communication between students and faculty.</p>
+          <div class="mt-8 text-center border-t border-gray-100 pt-6">
+            <button onclick="closeModal('privacyModal')" class="bg-primary text-white px-10 py-3.5 rounded-xl font-bold hover:bg-primaryDark transition-colors shadow-md">Close</button>
           </div>
         </div>
       </div>
     </div>
 
-    <div
-      id="termsModal"
-      class="modal fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
-    >
-      <div
-        class="modal-content bg-white w-full max-w-2xl max-h-[80vh] overflow-y-auto rounded-3xl p-8 relative shadow-2xl"
-      >
-        <button
-          onclick="closeModal('termsModal')"
-          class="absolute top-6 right-6 w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors text-textMain"
-        >
+    <div id="termsModal" class="modal fixed inset-0 z-[100] flex items-center justify-center bg-textMain/40 backdrop-blur-sm p-4">
+      <div class="modal-content bg-white w-full max-w-2xl max-h-[80vh] overflow-y-auto rounded-3xl p-10 relative shadow-2xl">
+        <button onclick="closeModal('termsModal')" class="absolute top-6 right-6 w-10 h-10 bg-secondary rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors text-textMain">
           <i class="fas fa-times"></i>
         </button>
-        <h2 class="text-2xl font-black text-textMain mb-4">Terms of Service</h2>
+        <h2 class="text-3xl font-extrabold text-textMain mb-6">Terms of Service</h2>
         <div class="prose prose-sm text-textSubtle">
-          <p class="mb-4"><strong>Effective Date:</strong> January 26, 2026</p>
-          <p class="mb-4">By using EduGuide, you agree to these terms.</p>
-          <h3 class="text-lg font-bold text-textMain mb-2">
-            1. Acceptable Use
-          </h3>
-          <p class="mb-4">
-            You agree to use EduGuide for academic purposes only. Misuse of the
-            email alert feature or harassment of faculty is strictly prohibited.
-          </p>
-          <h3 class="text-lg font-bold text-textMain mb-2">2. Accuracy</h3>
-          <p class="mb-4">
-            While we strive for real-time accuracy, availability depends on data
-            sync. We are not responsible for missed appointments due to sudden
-            schedule changes.
-          </p>
-          <div class="mt-8 text-center">
-            <button
-              onclick="closeModal('termsModal')"
-              class="bg-primary text-white px-8 py-3 rounded-full font-bold hover:bg-primaryDark transition-colors"
-            >
-              I Agree
-            </button>
+          <p class="mb-4 text-sm font-medium bg-secondary inline-block px-3 py-1 rounded-md border border-gray-100">Effective Date: January 26, 2026</p>
+          <p class="mb-6 leading-relaxed">By using EduGuide, you agree to these terms.</p>
+          <h3 class="text-lg font-bold text-textMain mb-3">1. Acceptable Use</h3>
+          <p class="mb-6 leading-relaxed">You agree to use EduGuide for academic purposes only. Misuse of the email alert feature or harassment of faculty is strictly prohibited.</p>
+          <h3 class="text-lg font-bold text-textMain mb-3">2. Accuracy</h3>
+          <p class="mb-8 leading-relaxed">While we strive for real-time accuracy, availability depends on data sync. We are not responsible for missed appointments due to sudden schedule changes.</p>
+          <div class="mt-8 text-center border-t border-gray-100 pt-6">
+            <button onclick="closeModal('termsModal')" class="bg-primary text-white px-10 py-3.5 rounded-xl font-bold hover:bg-primaryDark transition-colors shadow-md">I Agree</button>
           </div>
         </div>
       </div>
     </div>
 
-    <div
-      id="contactModal"
-      class="modal fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
-    >
-      <div
-        class="modal-content bg-white w-full max-w-md rounded-3xl p-8 relative shadow-2xl text-center"
-      >
-        <button
-          onclick="closeModal('contactModal')"
-          class="absolute top-6 right-6 w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors text-textMain"
-        >
+    <div id="contactModal" class="modal fixed inset-0 z-[100] flex items-center justify-center bg-textMain/40 backdrop-blur-sm p-4">
+      <div class="modal-content bg-white w-full max-w-md rounded-3xl p-10 relative shadow-2xl text-center">
+        <button onclick="closeModal('contactModal')" class="absolute top-6 right-6 w-10 h-10 bg-secondary rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors text-textMain">
           <i class="fas fa-times"></i>
         </button>
-        <div
-          class="w-16 h-16 bg-blue-50 text-primary rounded-2xl flex items-center justify-center text-3xl mx-auto mb-6"
-        >
+        <div class="w-20 h-20 bg-blue-50 text-primary rounded-full flex items-center justify-center text-3xl mx-auto mb-6 shadow-inner">
           <i class="fas fa-headset"></i>
         </div>
-        <h2 class="text-2xl font-black text-textMain mb-2">Contact Support</h2>
-        <p class="text-textSubtle text-sm mb-6">
-          Found a bug or have a feature request? Drop us a mail!
-        </p>
+        <h2 class="text-2xl font-extrabold text-textMain mb-3">Contact Support</h2>
+        <p class="text-textSubtle text-sm mb-8 leading-relaxed">Found a bug or have a feature request? Drop us an email, and we'll get back to you.</p>
 
-        <div class="space-y-2">
-          <a
-            href="https://mail.google.com/mail/?view=cm&to=SAHILMISHRA03032005@gmail.com"
-            target="_blank"
-            class="flex items-center gap-3 p-3 bg-gray-50 hover:bg-blue-50 border border-gray-100 hover:border-primary/20 rounded-xl transition-all group"
-          >
-            <div
-              class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-sm"
-            >
-              S
+        <div class="space-y-4">
+          <a href="mailto:SAHILMISHRA03032005@gmail.com" target="_blank" class="flex items-center gap-4 p-4 bg-secondary hover:bg-blue-50 border border-gray-100 hover:border-primary/30 rounded-2xl transition-all group shadow-sm">
+            <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-primary font-bold text-lg shadow-sm group-hover:scale-105 transition-transform">S</div>
+            <div class="flex-1 text-left">
+              <p class="font-bold text-textMain text-sm">Email Sahil</p>
+              <p class="text-xs text-textSubtle mt-0.5">SAHILMISHRA03032005@gmail.com</p>
             </div>
-            <div class="flex-1">
-              <div class="text-xs font-bold text-gray-400 uppercase mb-1">
-                Developer
-              </div>
-              <div
-                class="text-textMain text-sm font-medium group-hover:text-primary"
-              >
-                Sahil Mishra
-              </div>
-            </div>
+            <i class="fas fa-chevron-right text-gray-300 group-hover:text-primary transition-colors"></i>
           </a>
-          <a
-            href="https://mail.google.com/mail/?view=cm&to=KRISHGUPTA0072@gmail.com"
-            target="_blank"
-            class="flex items-center gap-3 p-3 bg-gray-50 hover:bg-blue-50 border border-gray-100 hover:border-primary/20 rounded-xl transition-all group"
-          >
-            <div
-              class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold text-sm"
-            >
-              K
-            </div>
-            <div class="flex-1">
-              <div class="text-xs font-bold text-gray-400 uppercase mb-1">
-                Designer
-              </div>
-              <div
-                class="text-textMain text-sm font-medium group-hover:text-primary"
-              >
-                Krish Gupta
-              </div>
-            </div>
-          </a>
-        </div>
-
-        <div class="mt-8">
-          <button
-            onclick="closeModal('contactModal')"
-            class="w-full bg-primary text-white py-3 rounded-xl font-bold hover:bg-primaryDark transition-colors"
-          >
-            Close
-          </button>
         </div>
       </div>
     </div>
 
     <script>
       function openModal(modalId) {
-        const modal = document.getElementById(modalId);
-        modal.classList.remove("hidden");
-        setTimeout(() => {
-          modal.classList.add("active");
-        }, 10);
-        document.body.style.overflow = "hidden";
+        document.getElementById(modalId).classList.add('active');
+        document.body.style.overflow = 'hidden';
       }
-
       function closeModal(modalId) {
-        const modal = document.getElementById(modalId);
-        modal.classList.remove("active");
-        setTimeout(() => {
-          modal.classList.add("hidden");
-        }, 300);
-        document.body.style.overflow = "auto";
+        document.getElementById(modalId).classList.remove('active');
+        document.body.style.overflow = 'auto';
       }
-
-      window.onclick = function (event) {
-        if (event.target.classList.contains("modal")) {
-          closeModal(event.target.id);
+      
+      // Close modal on outside click
+      window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+          event.target.classList.remove('active');
+          document.body.style.overflow = 'auto';
         }
-      };
+      }
     </script>
   </body>
 </html>
